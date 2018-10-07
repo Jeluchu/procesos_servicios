@@ -1,40 +1,32 @@
 // PROGRAMA 1 · HILOS - "HOLA MUNDO"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <pthread.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <unistd.h>
+# include <pthread.h>
 
-void * hola ( void * arg ) 
+void *slowprintf (void *arg) 
 {
-    char * msg = " Hola ";
+    char *msg;
     int i;
-    for ( i = 0 ; i < strlen ( msg ) ; i ++ ) {
-        printf (" %c" , msg [ i ]) ;
-        fflush ( stdout ) ;
-        usleep (1000000) ;
+    msg = (char *) arg ;
+    for (i = 0; i < strlen(msg); i ++) {
+        printf("%c ", msg[i]);
+        fflush(stdout);
+        usleep(1000000);
     }
-    return NULL ;
 }
 
-void * mundo ( void * arg ) 
+int main (int argc, char *argv[]) 
 {
-    char * msg = " mundo ";
-    int i;
-    for ( i = 0 ; i < strlen ( msg ) ; i ++ ) {
-        printf (" %c" , msg [ i ]) ;
-        fflush ( stdout ) ;
-        usleep (1000000) ;
-    }
-    return NULL ;
-}
-
-int main ( int argc , char * argv []) 
-{
-    pthread_t h1 ;
-    pthread_t h2 ;
-    pthread_create (& h1 , NULL , hola , NULL );
-    pthread_create (& h2 , NULL , mundo , NULL );
-    printf ( " Fin \n ");
+    pthread_t h1;
+    pthread_t h2;
+    char *hola = "Hola";
+    char *mundo = "mundo";
+    pthread_create (&h1, NULL, slowprintf, (void *)hola);
+    pthread_create (&h2, NULL, slowprintf, (void *)mundo);
+    pthread_join (h1, NULL);
+    pthread_join (h2, NULL);
+    printf("\n\nFin\n");
 }
